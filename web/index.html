@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roleta de Filmes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Barra para arrastar a janela frameless + botões custom -->
+    <div class="titlebar pywebview-drag-region">
+      <span class="title">🎬 Roleta de Filmes</span>
+      <div class="win-buttons">
+        <button id="btn-min" title="Minimizar" class="win-btn">–</button>
+        <button id="btn-close" title="Fechar" class="win-btn close">×</button>
+      </div>
+    </div>
+
+    <!-- Painel lateral de filtros + lista (abre por cima) -->
+    <button id="btn-panel" class="fab" title="Filtros e lista">⚙</button>
+
+    <!-- ROLETA -->
+    <main class="stage">
+      <div class="wheel-wrap">
+        <div class="pointer"></div>
+        <canvas id="wheel" width="520" height="520"></canvas>
+        <button id="spin" class="spin-btn">GIRAR</button>
+      </div>
+      <p id="pool-info" class="pool-info"></p>
+    </main>
+
+    <!-- CARTÃO DE RESULTADO -->
+    <div id="result-overlay" class="overlay hidden">
+      <div class="result-card">
+        <button id="result-close" class="card-close">×</button>
+        <div class="result-head">
+          <img id="result-poster" class="poster" alt="" />
+          <div class="result-meta">
+            <h2 id="result-title"></h2>
+            <div id="result-tags" class="tags"></div>
+          </div>
+        </div>
+        <p id="result-overview" class="overview"></p>
+
+        <div class="section">
+          <h3>Onde assistir</h3>
+          <div id="result-providers" class="providers"></div>
+        </div>
+
+        <div class="actions">
+          <button id="btn-trailer" class="btn btn-green">▶ Trailer no YouTube</button>
+          <button id="btn-stremio" class="btn btn-blue">Abrir no Stremio</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL DE FILTROS + LISTA -->
+    <div id="side-panel" class="side-panel hidden">
+      <div class="panel-inner">
+        <button id="panel-close" class="card-close">×</button>
+
+        <h3>Filtros</h3>
+        <label class="switch-row">
+          <input type="checkbox" id="toggle-series" checked />
+          <span>Incluir séries na roleta</span>
+        </label>
+
+        <div class="genres-block">
+          <div class="genres-head">
+            <span>Gêneros</span>
+            <button id="genres-clear" class="link-btn">limpar</button>
+          </div>
+          <div id="genre-chips" class="chips"></div>
+        </div>
+
+        <hr />
+
+        <h3>Minha lista</h3>
+        <form id="add-form" class="add-form">
+          <input type="text" id="add-input" placeholder="Adicionar título..." autocomplete="off" />
+          <button type="submit" class="btn btn-green small">+</button>
+        </form>
+        <div id="movie-list" class="movie-list"></div>
+      </div>
+    </div>
+
+    <!-- SELETOR DE CANDIDATOS (confirmar o título certo) -->
+    <div id="picker-overlay" class="overlay hidden">
+      <div class="result-card picker-card">
+        <button id="picker-close" class="card-close">×</button>
+        <h2 id="picker-title" class="picker-title"></h2>
+        <p class="picker-sub">Escolha o título correto:</p>
+        <div id="picker-list" class="picker-list"></div>
+        <button id="picker-none" class="btn btn-blue" style="margin-top:14px">
+          Nenhum desses — adicionar mesmo assim
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

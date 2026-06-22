@@ -1,0 +1,26 @@
+# Segredos — NUNCA versionar a chave do TMDB
+.env
+
+# Ambiente virtual Python
+.venv/
+venv/
+
+# Caches Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Dados gerados em tempo de execução (a lista vem do filmes_iniciais.rtf)
+data/
+
+# Artefatos de build do PyInstaller / DMG
+build/
+dist/
+*.dmg
+build_assets/icon.iconset/
+
+# macOS
+.DS_Store
+
+# Ferramentas locais
+.claude/
