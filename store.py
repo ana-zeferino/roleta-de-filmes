@@ -39,6 +39,7 @@ def _new_item(title):
         "trailer_url": None,
         "providers": [],
         "enriched": False,
+        "watched": False,
     }
 
 

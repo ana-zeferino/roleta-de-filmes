@@ -48,6 +48,7 @@ async function init() {
 /* ----------------------- filtragem ----------------------- */
 function computePool() {
   state.pool = state.movies.filter((m) => {
+    if (m.watched) return false;
     if (!state.includeSeries && m.media_type === "tv") return false;
     if (state.selectedGenres.size > 0) {
       const has = (m.genres || []).some((g) => state.selectedGenres.has(g));
@@ -246,6 +247,15 @@ async function showResult(item) {
 
   $("#btn-stremio").onclick = () => api.open_stremio(data);
 
+  $("#btn-watch").onclick = async () => {
+    await api.set_watched(data.id, true);
+    const m = state.movies.find((x) => x.id === data.id);
+    if (m) m.watched = true;
+    $("#result-overlay").classList.add("hidden");
+    render();
+    toast(`Bom filme! "${data.title}" saiu da roleta. 🍿`);
+  };
+
   $("#result-overlay").classList.remove("hidden");
 }
 
@@ -277,12 +287,31 @@ function renderList() {
   box.innerHTML = "";
   state.movies.forEach((m) => {
     const row = document.createElement("div");
-    row.className = "movie-row";
+    row.className = "movie-row" + (m.watched ? " watched" : "");
 
     const name = document.createElement("span");
     name.className = "name";
     name.textContent = m.title;
     row.appendChild(name);
+
+    if (m.watched) {
+      const seen = document.createElement("span");
+      seen.className = "seen";
+      seen.textContent = "visto";
+      row.appendChild(seen);
+
+      const back = document.createElement("button");
+      back.className = "row-btn";
+      back.textContent = "↩";
+      back.title = "Devolver à roleta";
+      back.onclick = async () => {
+        await api.set_watched(m.id, false);
+        m.watched = false;
+        render();
+        toast(`"${m.title}" voltou para a roleta!`);
+      };
+      row.appendChild(back);
+    }
 
     const kind = document.createElement("span");
     if (m.media_type === "tv") { kind.className = "kind tv"; kind.textContent = "Série"; }

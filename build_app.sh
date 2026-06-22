@@ -23,6 +23,11 @@ if [ ! -d "$APP_PATH" ]; then
   echo "ERRO: $APP_PATH não foi criado."; exit 1
 fi
 
+echo "==> Limpando atributos estendidos e assinando (ad-hoc)"
+xattr -cr "$APP_PATH"
+codesign --force --deep -s - "$APP_PATH"
+codesign --verify --deep --strict "$APP_PATH" && echo "   assinatura ad-hoc OK"
+
 echo "==> Montando estrutura do DMG"
 STAGING="dist/dmg"
 rm -rf "$STAGING"; mkdir -p "$STAGING"

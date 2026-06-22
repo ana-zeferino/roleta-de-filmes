@@ -96,6 +96,11 @@ class Api:
         store.update(item_id, media_type=media_type)
         return {"ok": True}
 
+    def set_watched(self, item_id, watched=True):
+        """Marca/desmarca como assistido (assistido = fora da roleta)."""
+        store.update(item_id, watched=bool(watched))
+        return {"ok": True}
+
     # ----- enriquecimento ----- #
     def enrich_all(self):
         """Completa metadados faltantes de todos os itens. Retorna a lista atualizada."""
