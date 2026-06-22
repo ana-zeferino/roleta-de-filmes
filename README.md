@@ -80,6 +80,23 @@ Isso gera:
 Seus dados (lista de filmes) ficam salvos em
 `~/Library/Application Support/Roleta de Filmes/`, então atualizar o app não apaga sua lista.
 
+## Windows (.exe)
+
+O `.exe` é gerado automaticamente pelo GitHub Actions (workflow `build-windows.yml`) e fica
+anexado na [Release](https://github.com/ana-zeferino/roleta-de-filmes/releases). Baixe o
+`Roleta-de-Filmes-Windows.exe` e dê dois cliques.
+
+Como o `.exe` é distribuído **sem a chave do TMDB** (por segurança), configure a chave assim:
+
+1. Abra o Explorador de Arquivos e cole na barra de endereço: `%APPDATA%\Roleta de Filmes`
+   (se a pasta não existir, abra o app uma vez que ela é criada).
+2. Crie ali um arquivo de texto chamado **`.env`** (exatamente assim, com o ponto na frente).
+3. Coloque dentro a linha: `TMDB_API_KEY=sua_chave_aqui`
+4. Salve e reabra o app.
+
+> O Windows pode mostrar um aviso do **SmartScreen** ("Windows protegeu o computador") por o app
+> não ser assinado. Clique em **Mais informações → Executar assim mesmo**.
+
 ## Dicas / problemas comuns
 
 - **"TMDB_API_KEY não configurada"** → confira se você criou o `.env` e colou a chave.
