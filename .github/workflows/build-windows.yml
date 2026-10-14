@@ -34,10 +34,10 @@ jobs:
 
       - name: Gerar ícone .ico
         run: |
-          python -c "from PIL import Image; Image.open('build_assets/icon_1024.png').save('build_assets/icon.ico', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
+          python -c "from PIL import Image; Image.open('packaging/assets/icon_1024.png').save('packaging/assets/icon.ico', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
 
       - name: Empacotar com PyInstaller
-        run: pyinstaller roleta.spec --noconfirm
+        run: pyinstaller packaging/roleta.spec --noconfirm
 
       - name: Renomear saída
         run: Copy-Item "dist/Roleta de Filmes.exe" "dist/Roleta-de-Filmes-Windows.exe"

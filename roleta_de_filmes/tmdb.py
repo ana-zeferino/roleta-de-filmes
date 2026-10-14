@@ -9,11 +9,11 @@ import os
 import requests
 from dotenv import load_dotenv
 
-import paths
+from . import paths
 
-# Lê o .env empacotado (dentro do .app) e, se existir, também um na pasta de dados
-# do usuário (permite trocar a chave sem reempacotar).
-load_dotenv(paths.resource_path(".env"))
+# Lê o .env da raiz do projeto (desenvolvimento) e, se existir, também um na pasta de
+# dados do usuário (é o que vale no app empacotado, que nunca embute a chave).
+load_dotenv(os.path.join(paths.PROJECT_ROOT, ".env"))
 load_dotenv(os.path.join(paths.data_dir(), ".env"), override=True)
 
 API_KEY = os.getenv("TMDB_API_KEY", "").strip()

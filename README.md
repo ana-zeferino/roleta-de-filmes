@@ -1,7 +1,7 @@
 # 🎬 Roleta de Filmes
 
-Um app local (Mac) com uma **roleta circular flutuante** para você e seu noivo sortearem o que
-assistir aos domingos. Ao sortear, mostra a **sinopse**, **onde assistir no Brasil** (+ botão para
+Um app local (Mac) com uma **roleta circular flutuante** para sortearem o que
+assistir. Ao sortear, mostra a **sinopse**, **onde assistir no Brasil** (+ botão para
 abrir no **Stremio**) e o **trailer no YouTube**. Dá pra filtrar por **gênero**, escolher se
 **séries** entram no sorteio e **editar a lista** dentro do próprio app.
 
@@ -42,7 +42,7 @@ cp .env.example .env
 
 ```bash
 source .venv/bin/activate   # se ainda não estiver ativo
-python app.py
+python run.py   # ou: python -m roleta_de_filmes
 ```
 
 A janela circular vai abrir. 🎉
@@ -56,15 +56,16 @@ A janela circular vai abrir. 🎉
 - **Gêneros** → marque um ou mais para filtrar a roleta.
 - **Minha lista** → adicione ou remova títulos a qualquer momento (a lista fica salva).
 
-A lista começa a partir do seu arquivo `Sem Título.rtf` na primeira execução e depois fica salva em
-`data/movies.json`.
+Na primeira execução a lista é criada a partir de
+[`roleta_de_filmes/data/filmes_iniciais.txt`](roleta_de_filmes/data/filmes_iniciais.txt) (um título por
+linha — edite à vontade) e depois fica salva na pasta de dados do app (veja abaixo).
 
 ## Gerar o app (.app) e o instalador (.dmg)
 
 Para ter o programa de verdade (abre pelo Launchpad/Finder, sem terminal):
 
 ```bash
-./build_app.sh
+./packaging/build_macos.sh
 ```
 
 Isso gera:
@@ -79,6 +80,9 @@ Isso gera:
 
 Seus dados (lista de filmes) ficam salvos em
 `~/Library/Application Support/Roleta de Filmes/`, então atualizar o app não apaga sua lista.
+
+> 🔑 O app empacotado **não embute** a chave do TMDB. Crie o arquivo `.env` (com
+> `TMDB_API_KEY=...`) dentro dessa mesma pasta de dados.
 
 ## Windows (.exe)
 
@@ -103,3 +107,22 @@ Como o `.exe` é distribuído **sem a chave do TMDB** (por segurança), configur
 - **Título sem sinopse / gênero errado** → o TMDB pode errar em títulos com erro de digitação. Use o
   painel **Minha lista** para remover e adicionar de novo com o nome correto.
 - **Não achou o trailer** → nem todo título tem trailer cadastrado no TMDB; o botão fica desabilitado.
+
+## Estrutura do projeto
+
+```
+roleta_de_filmes/     # pacote Python
+  app.py              # janela (pywebview) e API exposta ao front-end
+  store.py            # persistência da lista (movies.json)
+  tmdb.py             # cliente da API do TMDB
+  paths.py            # caminhos de recursos e pasta de dados
+  data/               # lista inicial de títulos
+  web/                # front-end (HTML/CSS/JS)
+packaging/            # empacotamento (PyInstaller, ícones, script de build do macOS)
+.github/workflows/    # build do .exe do Windows
+run.py                # ponto de entrada
+```
+
+## Licença
+
+[MIT](LICENSE)

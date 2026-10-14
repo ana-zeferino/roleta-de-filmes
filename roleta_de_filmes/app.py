@@ -9,9 +9,7 @@ from urllib.parse import quote
 
 import webview
 
-import paths
-import store
-import tmdb
+from . import paths, store, tmdb
 
 INDEX = paths.resource_path("web", "index.html")
 

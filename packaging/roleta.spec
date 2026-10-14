@@ -1,7 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 # Empacota a Roleta de Filmes.
-#   macOS:   pyinstaller roleta.spec --noconfirm   -> dist/Roleta de Filmes.app
-#   Windows: pyinstaller roleta.spec --noconfirm   -> dist/Roleta de Filmes.exe (onefile)
+# Rode a partir da raiz do projeto:
+#   macOS:   pyinstaller packaging/roleta.spec --noconfirm   -> dist/Roleta de Filmes.app
+#   Windows: pyinstaller packaging/roleta.spec --noconfirm   -> dist/Roleta de Filmes.exe (onefile)
 
 import os
 import sys
@@ -9,6 +10,9 @@ import sys
 from PyInstaller.utils.hooks import collect_all
 
 IS_WIN = sys.platform == "win32"
+ROOT = os.path.abspath(os.path.join(SPECPATH, ".."))  # SPECPATH é definido pelo PyInstaller
+PKG = os.path.join(ROOT, "roleta_de_filmes")
+ASSETS = os.path.join(SPECPATH, "assets")
 
 # Coleta de submódulos. No Windows o pywebview usa WebView2 (pythonnet/clr);
 # no macOS usa pyobjc (objc/Foundation/WebKit/AppKit/Quartz).
@@ -31,17 +35,15 @@ if IS_WIN:
 
 # Recursos da aplicação (somente leitura dentro do pacote).
 datas += [
-    ("web", "web"),
-    ("filmes_iniciais.rtf", "."),
+    (os.path.join(PKG, "web"), "roleta_de_filmes/web"),
+    (os.path.join(PKG, "data"), "roleta_de_filmes/data"),
 ]
-# .env empacotado só se existir (em CI normalmente não existe — o app também lê
-# um .env da pasta de dados do usuário).
-if os.path.exists(".env"):
-    datas += [(".env", ".")]
+# A chave do TMDB NUNCA é embutida no pacote: o app lê o .env da pasta de dados
+# do usuário (veja o README).
 
 a = Analysis(
-    ["app.py"],
-    pathex=[],
+    [os.path.join(ROOT, "run.py")],
+    pathex=[ROOT],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
@@ -69,7 +71,7 @@ if IS_WIN:
         runtime_tmpdir=None,
         console=False,
         disable_windowed_traceback=False,
-        icon="build_assets/icon.ico",
+        icon=os.path.join(ASSETS, "icon.ico"),
     )
 else:
     exe = EXE(
@@ -102,8 +104,8 @@ else:
     app = BUNDLE(
         coll,
         name="Roleta de Filmes.app",
-        icon="build_assets/icon.icns",
-        bundle_identifier="com.ana.roletadefilmes",
+        icon=os.path.join(ASSETS, "icon.icns"),
+        bundle_identifier="com.roletadefilmes.app",
         info_plist={
             "CFBundleName": "Roleta de Filmes",
             "CFBundleDisplayName": "Roleta de Filmes",

@@ -1,4 +1,4 @@
-"""Leitura/gravação da lista de filmes em data/movies.json.
+"""Leitura/gravação da lista de filmes em movies.json (na pasta de dados do usuário).
 
 Cada item tem o formato:
 {
@@ -17,14 +17,13 @@ Cada item tem o formato:
 
 import json
 import os
-import re
 import uuid
 
-import paths
+from . import paths
 
 DATA_DIR = paths.data_dir()
 MOVIES_FILE = os.path.join(DATA_DIR, "movies.json")
-RTF_FILE = paths.resource_path("filmes_iniciais.rtf")
+SEED_FILE = paths.resource_path("data", "filmes_iniciais.txt")
 
 
 def _new_item(title):
@@ -44,41 +43,14 @@ def _new_item(title):
 
 
 # --------------------------------------------------------------------------- #
-# Parser simples de RTF -> lista de títulos
+# Lista inicial
 # --------------------------------------------------------------------------- #
-def _rtf_to_titles(rtf_text):
-    """Extrai os títulos (uma linha por filme) de um RTF simples do TextEdit."""
-    # As linhas de conteúdo terminam com "\" (quebra de parágrafo do RTF).
-    # Removemos blocos de cabeçalho {...} e grupos de controle como {\fonttbl ...}.
-    text = rtf_text
-
-    # Decodifica caracteres acentuados no formato \'e3 -> ã (cp1252).
-    def _hex(match):
-        return bytes([int(match.group(1), 16)]).decode("cp1252", errors="replace")
-
-    text = re.sub(r"\\'([0-9a-fA-F]{2})", _hex, text)
-
-    titles = []
-    for raw_line in text.split("\\\n"):
-        line = raw_line
-        # Remove grupos {...} (tabelas de fonte/cor) inteiros.
-        line = re.sub(r"\{[^{}]*\}", "", line)
-        # Remove comandos de controle do RTF (\f0, \cf0, \pard, \tx566, etc.).
-        line = re.sub(r"\\[a-zA-Z]+-?\d*\s?", "", line)
-        # Remove chaves soltas e símbolos de controle restantes.
-        line = line.replace("{", "").replace("}", "").replace("\\", "")
-        line = line.strip()
-        if line:
-            titles.append(line)
-    return titles
-
-
-def seed_from_rtf():
-    """Cria itens a partir do RTF, se ele existir."""
-    if not os.path.exists(RTF_FILE):
+def seed_from_file():
+    """Cria itens a partir de filmes_iniciais.txt (um título por linha)."""
+    if not os.path.exists(SEED_FILE):
         return []
-    with open(RTF_FILE, "r", encoding="utf-8", errors="replace") as fh:
-        titles = _rtf_to_titles(fh.read())
+    with open(SEED_FILE, "r", encoding="utf-8") as fh:
+        titles = [line.strip() for line in fh if line.strip()]
     # Remove duplicatas preservando ordem.
     seen = set()
     items = []
@@ -94,10 +66,10 @@ def seed_from_rtf():
 # Persistência
 # --------------------------------------------------------------------------- #
 def load():
-    """Carrega a lista; na primeira vez, semeia a partir do RTF."""
+    """Carrega a lista; na primeira vez, semeia a partir do arquivo inicial."""
     os.makedirs(DATA_DIR, exist_ok=True)
     if not os.path.exists(MOVIES_FILE):
-        items = seed_from_rtf()
+        items = seed_from_file()
         save(items)
         return items
     with open(MOVIES_FILE, "r", encoding="utf-8") as fh:

@@ -1,7 +1,7 @@
 """Resolução de caminhos que funciona tanto rodando via `python app.py`
 quanto dentro de um .app empacotado pelo PyInstaller.
 
-- recursos só-leitura (web/, RTF, .env) -> ao lado do código ou em sys._MEIPASS
+- recursos só-leitura (web/, data/) -> ao lado do código ou em sys._MEIPASS
 - dados graváveis (movies.json) -> pasta do usuário (Application Support)
 """
 
@@ -9,6 +9,8 @@ import os
 import sys
 
 APP_NAME = "Roleta de Filmes"
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(PACKAGE_DIR)
 
 
 def is_frozen():
@@ -16,11 +18,11 @@ def is_frozen():
 
 
 def resource_path(*parts):
-    """Caminho de um recurso empacotado (só-leitura)."""
+    """Caminho de um recurso do pacote `roleta_de_filmes` (só-leitura)."""
     if is_frozen():
-        base = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+        base = os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(sys.executable)), "roleta_de_filmes")
     else:
-        base = os.path.dirname(os.path.abspath(__file__))
+        base = PACKAGE_DIR
     return os.path.join(base, *parts)
 
 

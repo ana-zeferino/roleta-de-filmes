@@ -1,9 +1,9 @@
 #!/bin/bash
 # Gera o app "Roleta de Filmes.app" e um instalador .dmg.
-# Uso:  ./build_app.sh
+# Uso (a partir de qualquer pasta):  ./packaging/build_macos.sh
 set -e
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."   # raiz do projeto
 APP_NAME="Roleta de Filmes"
 
 echo "==> Ativando ambiente virtual"
@@ -16,7 +16,7 @@ echo "==> Limpando builds anteriores"
 rm -rf build dist "${APP_NAME}.dmg"
 
 echo "==> Empacotando o .app"
-pyinstaller roleta.spec --noconfirm
+pyinstaller packaging/roleta.spec --noconfirm
 
 APP_PATH="dist/${APP_NAME}.app"
 if [ ! -d "$APP_PATH" ]; then
